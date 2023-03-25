@@ -24,10 +24,6 @@ struct Atom
     float fx, fy, fz;
     char name;
     bool real;
-//    float q;
-//    float sigma;
-//    float epsilon;
-//    char name;
 };
 
 float transferPBC(float x)
@@ -58,19 +54,11 @@ void saveFrame(const char* filename, const char* modifier, std::vector<Atom> ato
     fclose(out);
 }
 
-// float distance(Atom atom1, Atom atom2) {
-//     float dist = pow((atom1.x - atom2.x), 2) +
-//                  pow((atom1.y - atom2.y), 2) +
-//                  pow((atom1.z - atom2.z), 2);
-//     return sqrtf(dist);
-// }
-
 float distance(Atom atom1, Atom atom2) {
     float dx = atom1.x - atom2.x;
     float dy = atom1.y - atom2.y;
     float dz = atom1.z - atom2.z;
 
-    // Check these
     dx -= rint(dx/L)*L;
     dy -= rint(dy/L)*L;
     dz -= rint(dz/L)*L;
@@ -88,7 +76,6 @@ int main(int argc, char* argv[])
     int N_c = N_b;
     int N_start = N_b + N_a;
     int N = N_b + N_c + N_a;
-    // float currentTemperature = T;
     std::vector<Atom> atoms(N);
 
     std::random_device randomDevice;
@@ -153,9 +140,6 @@ int main(int argc, char* argv[])
         }
     }
     saveFrame("ABC.xyz", "w", atoms);
-
-    // double temperature = 0.0;
-    // int nTemperature = 0;
 
     for (int n = 0; n < NSTEPS; n++)
     {
@@ -224,25 +208,6 @@ int main(int argc, char* argv[])
                     atoms[j].fx -= fi*dx;
                     atoms[j].fy -= fi*dy;
                     atoms[j].fz -= fi*dz;
-
-                // float dr2 = dx*dx + dy*dy + dz*dz;
-                // float sigma = 0.5*(atoms[i].sigma + atoms[j].sigma);
-                // float epsilon = sqrtf(atoms[i].epsilon*atoms[j].epsilon);
-                // float sigma2 = sigma*sigma;
-                // float sor2 = sigma2/dr2;
-                // float sor6 = sor2*sor2*sor2;
-                // float df = 12.0*epsilon*sor6*(sor6 - 1.0)/dr2;
-
-                // float dr = sqrtf(dr2);
-                // df += KC*atoms[i].q*atoms[j].q/(dr2*dr);
-
-                // atoms[i].fx += df*dx;
-                // atoms[i].fy += df*dy;
-                // atoms[i].fz += df*dz;
-
-                // atoms[j].fx -= df*dx;
-                // atoms[j].fy -= df*dy;
-                // atoms[j].fz -= df*dz;
                 }
             }
         }
@@ -251,23 +216,14 @@ int main(int argc, char* argv[])
         {
         if (atoms[i].real) 
         {
-            // float scale = sqrtf(1.0 - ((currentTemperature-T)*tau)/(T*relax));
-            // atoms[i].vx *= scale;
-            // atoms[i].vy *= scale;
-            // atoms[i].vz *= scale;
 
-            // float mult = tau/atoms[i].m;
-
-            // atoms[i].vx = atoms[i].vx + mult*atoms[i].fx;
-            // atoms[i].vy = atoms[i].vy + mult*atoms[i].fy;
-            // atoms[i].vz = atoms[i].vz + mult*atoms[i].fz;
-// правильные
             atoms[i].vx = 2 * tau / (2 + lambda * tau) * (atoms[i].fx + atoms[i].vx*(m/tau - lambda*m/2) + 
             sqrtf(2*kb*T*lambda/tau) * distributionR(randomGenerator));
             atoms[i].vy = 2 * tau / (2 + lambda * tau) * (atoms[i].fy + atoms[i].vy*(m/tau - lambda*m/2) + 
             sqrtf(2*kb*T*lambda/tau) * distributionR(randomGenerator));
             atoms[i].vz = 2 * tau / (2 + lambda * tau) * (atoms[i].fz + atoms[i].vz*(m/tau - lambda*m/2) + 
             sqrtf(2*kb*T*lambda/tau) * distributionR(randomGenerator));
+            // simplified version
             // atoms[i].vx = tau / m * (atoms[i].fx + atoms[i].vx*(m/tau - lambda) + 
             // sqrtf(2*kb*T*lambda/tau) * distributionR(randomGenerator));
             // atoms[i].vy = tau / m * (atoms[i].fy + atoms[i].vy*(m/tau - lambda) + 
@@ -291,10 +247,6 @@ int main(int argc, char* argv[])
 
         if (n % 100 == 0)
         {
-            // currentTemperature = (temperature/(3.0*KB))/nTemperature;
-            // printf("%d\t%f\n", n);
-            // temperature = 0.0;
-            // nTemperature = 0;
             saveFrame("ABC.xyz", "a", atoms);
         }
     }
