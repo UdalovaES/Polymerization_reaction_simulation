@@ -45,5 +45,5 @@ m_i\frac{v_{i}^{n+\frac{1}{2}}-v_{i}^{n-\frac{1}{2}}}{τ} = f_{i}^{n} - λ m_i\f
 ## Отрисовка
 Отрисовка выполняется при помощи программы Visual Molecular Dynamics. 
 <p align="center">
-  <img src="results/Process_modeling.giff">
+  <img src="results/Process_modeling.gif">
 </p>
